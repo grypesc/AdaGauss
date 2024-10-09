@@ -4,7 +4,7 @@ This repostory contains code for NeurIPS 2024 paper on Continual Learning: **Tas
 
 We consider exemplar free class incremental scenario, where we revisit the task-recency bias. Unlike previous works, that focused on the biased classification head, we look at the latent space. We show that old class representations have lower ranks than new classes and this is the core of the problem. We solve this issue with anti-collapse loss. Additionally, we are first to adapt covariances on classes from old tasks to the new one.
 
-In our method we train feature extractor on all tasks using: cross-entropy, feature distillation through a neural projector and anti-collapse loss functions. We represent each class as Gaussian distribution in the latent space. After each task we transform these distributions from the old model's latent space to the new using an auxilary neural network.
+In our method we train feature extractor on all tasks using: cross-entropy, feature distillation through a neural projector and anti-collapse loss functions. We represent each class as Gaussian distribution in the latent space. After each task we transform these distributions from the old model's latent space to the new using an auxilary neural network (to alleviate semantic drift problem).
 
 
 ### Setup
