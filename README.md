@@ -6,6 +6,7 @@ We consider exemplar free class incremental scenario, where we revisit the task-
 
 In our method we train feature extractor on all tasks using: cross-entropy, feature distillation through a neural projector and anti-collapse loss functions. We represent each class as Gaussian distribution in the latent space. After each task we transform these distributions from the old model's latent space to the new using an auxilary neural network (to alleviate semantic drift problem).
 
+![image](images/method.png?raw=true "Adagauss")
 
 ### Setup
 Create virtual environment and install dependencies:
