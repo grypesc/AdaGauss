@@ -39,7 +39,7 @@ class SampledDataset(torch.utils.data.Dataset):
 
 
 class Appr(Inc_Learning_Appr):
-    """Class implementing the joint baseline"""
+    """Class implementing AdaGauss algorithm"""
 
     def __init__(self, model, device, nepochs=200, lr=0.05, lr_min=1e-4, lr_factor=3, lr_patience=5, clipgrad=1,
                  momentum=0, wd=0, multi_softmax=False, wu_nepochs=0, wu_lr_factor=1, nnet="resnet18", patience=5, fix_bn=False, eval_on_train=False,
@@ -203,7 +203,7 @@ class Appr(Inc_Learning_Appr):
                             action='store_true',
                             default=False)
         parser.add_argument('--normalize',
-                            help='xxx',
+                            help='normalize features and covariance matrices',
                             action='store_true',
                             default=False)
         parser.add_argument('--dump',
@@ -584,7 +584,7 @@ class Appr(Inc_Learning_Appr):
                 print("")
 
     def distill_projected(self, t, loss, features, distiller, images):
-        """ Projected distillation through the distiller"""
+        """ Projected distillation through the distiller, like in https://arxiv.org/abs/2308.12112"""
         if t == 0:
             return loss, 0
         with torch.no_grad():
@@ -594,7 +594,7 @@ class Appr(Inc_Learning_Appr):
         return total_loss, kd_loss
 
     def distill_features(self, t, loss, features, images):
-        """ Projected distillation through the distiller"""
+        """ Feature distillation performed in the latent space of the feature extractor """
         if t == 0:
             return loss, 0
         with torch.no_grad():
@@ -604,7 +604,7 @@ class Appr(Inc_Learning_Appr):
         return total_loss, kd_loss
 
     def distill_logits(self, t, loss, features, images, old_heads):
-        """ Projected distillation through the distiller"""
+        """ Logit distillation like in LwF method"""
         if t == 0:
             return loss, 0
         with torch.no_grad():
@@ -632,14 +632,13 @@ class Appr(Inc_Learning_Appr):
         return optimizer, scheduler
 
     def get_pseudo_head_optimizer(self, parameters, milestones=(15,)):
-        """Returns the optimizer"""
         optimizer = torch.optim.SGD(parameters, lr=0.1, weight_decay=5e-4, momentum=0.9)
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=milestones, gamma=0.1)
         return optimizer, scheduler
 
     @torch.no_grad()
     def eval(self, t, val_loader):
-        """ Perform nearest centroids classification """
+        """ Perform classification using mahalanobis distance OR nearest mean OR linear head. """
         self.model.eval()
         tag_acc = Accuracy("multiclass", num_classes=self.means.shape[0])
         taw_acc = Accuracy("multiclass", num_classes=self.classes_in_tasks[t])
