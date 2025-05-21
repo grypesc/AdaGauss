@@ -21,4 +21,8 @@ Reproduce experiments using scripts in ```scripts``` directory:
 bash scripts/cifar-10x10.sh
 ```
 
-Feel free to contact me on LinkedIn if you have any questions.
+### To run pretrained ViT download a model from https://github.com/facebookresearch/dino: 
+```bash
+mkdir pretrained && cd pretrained
+wget https://dl.fbaipublicfiles.com/dino/dino_deitsmall16_pretrain/dino_deitsmall16_pretrain.pth
+```
